@@ -1,0 +1,23 @@
+fastapi
+uvicorn[standard]
+pydantic
+hrb-common-libs[observability,db,vectorstore,llm,mcp,auth,cache,web,storage,email] @ git+https://github.com/rvsree/hrb-common-libs.git@v0.4.0
+
+# Retrieval + query decomposition - LangChain's own retrievers (matches
+# hrb_chatbot_service's own "retrieval stays raw LangChain" convention)
+langchain==0.3.20
+langchain-core<1.0.0
+langchain-community==0.3.19
+langchain-openai==0.3.35
+langchain-chroma==0.2.6
+langchain-pinecone==0.2.13
+langchain-experimental==0.3.4
+rank-bm25==0.2.2
+
+# Multi-agentic orchestration
+langgraph==0.3.21
+langgraph-checkpoint==2.1.2
+langgraph-checkpoint-postgres==2.0.25
+
+# Guardrails
+nemoguardrails==0.24.1

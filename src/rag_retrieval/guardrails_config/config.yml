@@ -1,0 +1,29 @@
+models:
+  - type: main
+    engine: openai
+    model: gpt-4.1-nano
+
+rails:
+  input:
+    flows:
+      - self check input
+      - mask sensitive data on input
+  output:
+    flows:
+      - self check output
+      - mask sensitive data on output
+
+  config:
+    sensitive_data_detection:
+      input:
+        entities:
+          - PERSON
+          - EMAIL_ADDRESS
+          - US_SSN
+          - CREDIT_CARD
+      output:
+        entities:
+          - PERSON
+          - EMAIL_ADDRESS
+          - US_SSN
+          - CREDIT_CARD
