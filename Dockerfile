@@ -4,10 +4,7 @@
 #
 #     docker build -t rag-retrieval-service:local .
 #
-# Two stages, same shape as hrb_api_gateway_service's own Dockerfile. No
-# spacy/presidio model download - confirmed by grep, no presidio/spacy
-# import anywhere under src/ (guardrails_input.py/guardrails_output.py use
-# NeMo Guardrails' own RailsConfig, not Presidio PII-masking).
+# Two stages, same shape as hrb_api_gateway_service's own Dockerfile.
 
 # ---------------------------------------------------------------------------
 # Stage 1 - build the virtual environment
@@ -31,6 +28,13 @@ COPY requirements.txt ./
 RUN python -m venv /opt/venv && \
     /opt/venv/bin/pip install --upgrade pip && \
     /opt/venv/bin/pip install -r requirements.txt
+
+# Presidio's analyzer (used by the "mask sensitive data" guardrail) needs
+# this model at runtime - exactly hrb_chatbot_service's own Phase 82 bug
+# ("every query blocked in production" until this line existed). Installs
+# as a package into the venv, so the COPY --from=builder /opt/venv /opt/venv
+# below picks it up automatically.
+RUN /opt/venv/bin/python -m spacy download en_core_web_lg
 
 # ---------------------------------------------------------------------------
 # Stage 2 - the image that actually runs

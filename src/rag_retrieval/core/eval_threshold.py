@@ -82,7 +82,14 @@ def build_eval_scores(
         "completeness_explanation": completeness["explanation"] if completeness else None,
         "completeness_prompt": completeness["prompt"] if completeness else None,
         "retrieval_precision": retrieval["precision"] if retrieval else None,
-        "retrieval_relevant_chunk_indices": retrieval["relevant_chunk_indices"] if retrieval else None,
+        # [] not None - EvalScores.retrieval_relevant_chunk_indices is
+        # list[int] (default_factory=list), not Optional. hrb_chatbot_service's
+        # own identical line never hits this because its real eval judges
+        # (Phase 109) keep `retrieval` populated in practice; this repo's
+        # judges are a deliberate no-op (see module docstring above), so
+        # `retrieval` really is None on every call - found live via a
+        # genai-rag smoke test that 500'd on this exact field.
+        "retrieval_relevant_chunk_indices": retrieval["relevant_chunk_indices"] if retrieval else [],
         "retrieval_precision_explanation": retrieval["explanation"] if retrieval else None,
         "retrieval_precision_prompt": retrieval["prompt"] if retrieval else None,
         "retrieval_recall_estimate": retrieval["recall_estimate"] if retrieval else None,

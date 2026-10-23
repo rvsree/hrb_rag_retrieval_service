@@ -11,6 +11,7 @@ retries (there's no live precision score yet to check against)."""
 import time
 
 from hrb_common.observability.logger import get_logger
+from hrb_common.observability.secrets import read_secret
 from rag_retrieval.core.eval_threshold import build_eval_scores, run_enabled_eval_judges
 from rag_retrieval.core.guarded_pipeline import run_guarded_pipeline
 from rag_retrieval.core.tool_classification import classify_tool
@@ -155,11 +156,21 @@ async def answer_query(params: RagQueryParams, request_id: str | None = None) ->
     normalized_query = await normalize_query(params.query)
     checked_query, input_guardrail_status = await check_input(normalized_query, guardrails_model=params.guardrails_model)
 
-    resolved_vector_db = params.vector_db or "chromadb"
-    resolved_search_strategy = params.search_strategy or "similarity"
+    # These 3 go through read_secret() (override, then env, then default),
+    # not a plain `or` literal - a bare `or` here silently skips this
+    # service's real ACTIVE_VECTOR_DB/RAG_DEFAULT_SEARCH_STRATEGY/
+    # ACTIVE_LLM_PROVIDER config and always falls back to the hardcoded
+    # default, which is exactly the bug that was found live: production
+    # sets ACTIVE_VECTOR_DB=pinecone, but every query silently used
+    # chromadb (unwritable, empty) instead. Matches hrb_chatbot_service's
+    # own get_active_vector_db()/get_active_llm_provider()/read_setting().
+    resolved_vector_db = read_secret("ACTIVE_VECTOR_DB", "chromadb", passed_in_value=params.vector_db)
+    resolved_search_strategy = read_secret(
+        "RAG_DEFAULT_SEARCH_STRATEGY", "similarity", passed_in_value=params.search_strategy
+    )
     if resolved_search_strategy == "dynamic":
         resolved_search_strategy = resolve_dynamic_strategy(checked_query)
-    resolved_llm_provider = params.llm_provider or "openai"
+    resolved_llm_provider = read_secret("ACTIVE_LLM_PROVIDER", "openai", passed_in_value=params.llm_provider)
     resolved_top_k = params.top_k or 5
     resolved_temperature = params.temperature if params.temperature is not None else 0.0
 

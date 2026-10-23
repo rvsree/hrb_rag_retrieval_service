@@ -7,11 +7,12 @@ name: Deploy
 # /query call against the deployed service.
 #
 # NOT YET CUT OVER: no production traffic (Gateway or UI) points at this
-# service yet - it runs standalone, verified independently. A real bug was
-# found during its own smoke test (its ported input guardrail blocks a
-# query production's hrb_chatbot_service answers correctly) - see
-# ROADMAP.md's own Phase 5 entry. Cutover needs that fixed and a separate
-# explicit go-ahead first.
+# service yet - it runs standalone, verified independently. 3 real bugs
+# found during live smoke testing (guardrail deps missing, vector_db/
+# search_strategy/llm_provider env resolution bypassed, EvalScores schema
+# vs. this repo's own no-op eval judges) were all found, fixed, and
+# re-verified live the same session - see ROADMAP.md's own Phase 5 entry.
+# Cutover itself still needs its own separate explicit go-ahead.
 #
 # Only master triggers this - a push to any other branch never reaches AWS.
 
