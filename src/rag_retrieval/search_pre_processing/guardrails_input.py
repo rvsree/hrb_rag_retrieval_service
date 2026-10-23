@@ -15,11 +15,15 @@ logger = get_logger("guardrails_input")
 
 CONFIG_PATH = Path(__file__).resolve().parents[1] / "guardrails_config"
 
-DEFAULT_GUARDRAILS_MODEL = "gpt-4.1-nano"
+# 2026-10-23 HOTFIX: was "gpt-4.1-nano" - OpenAI shut that model down today
+# (GET /v1/models/gpt-4.1-nano returns shutdown_date 2026-10-23; confirmed
+# live, same real incident hrb_chatbot_service's own guardrails_input.py
+# hit). gpt-4.1-mini's own shutdown_date is 2027-01-14.
+DEFAULT_GUARDRAILS_MODEL = "gpt-4.1-mini"
 
 
 def supported_guardrails_models() -> list[str]:
-    raw = read_secret("GUARDRAILS_SUPPORTED_MODELS", f"{DEFAULT_GUARDRAILS_MODEL},gpt-4.1-mini")
+    raw = read_secret("GUARDRAILS_SUPPORTED_MODELS", f"{DEFAULT_GUARDRAILS_MODEL},gpt-4.1")
     return [model.strip() for model in raw.split(",") if model.strip()]
 
 
