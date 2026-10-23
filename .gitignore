@@ -4,3 +4,6 @@ __pycache__/
 venv/
 .pytest_cache/
 .env
+
+# Runtime data - generated locally, not source code
+data/
