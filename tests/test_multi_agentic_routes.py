@@ -9,7 +9,7 @@ client = TestClient(app)
 def _canned_result(**overrides):
     base = {
         "query": "what is the 401k policy",
-        "answer": "JPMC matches your 401k contribution up to 5%.",
+        "answer": "AmazingBank matches your 401k contribution up to 5%.",
         "tasks": [{"agent": "vector_kb_agent", "focus": "401k policy", "reasoning": "a policy question"}],
         "follow_up_questions": ["How do I enroll?"],
         "tools_used": [],
@@ -42,7 +42,7 @@ def test_multi_agentic_query_route_happy_path(monkeypatch):
 
     assert response.status_code == 200
     body = response.json()
-    assert body["answer"] == "JPMC matches your 401k contribution up to 5%."
+    assert body["answer"] == "AmazingBank matches your 401k contribution up to 5%."
     assert body["tasks"][0]["agent"] == "vector_kb_agent"
     assert body["suggested_follow_up_questions"] == ["How do I enroll?"]
 

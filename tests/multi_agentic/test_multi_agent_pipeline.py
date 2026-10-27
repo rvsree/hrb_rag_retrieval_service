@@ -68,7 +68,7 @@ async def test_single_task_dispatch_answers_via_reviewer(monkeypatch):
 
     async def _fake_review(query, agent_results, request_id=None):
         assert len(agent_results) == 1
-        return "JPMC matches your 401k contribution up to 5%.", {
+        return "AmazingBank matches your 401k contribution up to 5%.", {
             "label": "reviewer", "latency_ms": 1.0, "system_prompt": "p", "human_message": "h",
             "chat_history": [], "response": "...",
         }
@@ -83,7 +83,7 @@ async def test_single_task_dispatch_answers_via_reviewer(monkeypatch):
 
     result = await multi_agent_pipeline.run_multi_agent("what is the 401k match", "EMP1")
 
-    assert result["answer"] == "JPMC matches your 401k contribution up to 5%."
+    assert result["answer"] == "AmazingBank matches your 401k contribution up to 5%."
     assert result["tasks"] == [{"agent": "vector_kb_agent", "focus": "what is the 401k match", "reasoning": "a policy question"}]
     assert result["follow_up_questions"] == ["How do I enroll?"]
     assert result["iterations"] == 1

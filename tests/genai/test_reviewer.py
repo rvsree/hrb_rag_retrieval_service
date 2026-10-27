@@ -21,7 +21,7 @@ class FakeLLM:
 async def test_generate_follow_ups_splits_lines(monkeypatch):
     monkeypatch.setattr(reviewer, "build_agent_llm", lambda: FakeLLM("What about dental coverage?\nHow do I enroll?"))
 
-    follow_ups = await reviewer.generate_follow_ups("What is the 401k match?", "JPMC matches up to 5%.")
+    follow_ups = await reviewer.generate_follow_ups("What is the 401k match?", "AmazingBank matches up to 5%.")
 
     assert follow_ups == ["What about dental coverage?", "How do I enroll?"]
 
