@@ -10,7 +10,7 @@ Check specifically:
 1. **No ingestion logic leaking in** - this repo is retrieval-only
    (decompose/retrieve/generate + guardrails/memory/agents/HITL). Anything
    resembling document extraction/chunking/embedding-for-indexing belongs
-   to `rag_ingestion_service`, not here.
+   to `hrb_rag_ingestion_service`, not here.
 2. **The 3 strategies stay genuinely separate** - don't force genai-rag,
    single-agentic-rag, and multi-agentic-rag into one shared abstraction
    where the real code doesn't share one. Only the guardrail/memory/

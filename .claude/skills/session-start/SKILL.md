@@ -1,7 +1,7 @@
 ---
 name: session-start
 description: >
-  Run at the start of a Claude Code session on rag_retrieval_service.
+  Run at the start of a Claude Code session on hrb_rag_retrieval_service.
   Loads current branch, recent commits, and open work from ROADMAP.md.
   Invoke automatically on session start, or explicitly as /session-start.
 allowed-tools: Read Bash(git *) Grep
