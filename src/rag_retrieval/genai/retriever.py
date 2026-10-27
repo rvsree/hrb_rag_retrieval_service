@@ -46,7 +46,7 @@ METADATA_FIELD_INFO = [
     ),
 ]
 DOCUMENT_CONTENTS_DESCRIPTION = (
-    "Sections of AmazingBank HR benefits policy documents - 401k, healthcare, paid/unpaid time off, "
+    "Sections of Amazing Bank HR benefits policy documents - 401k, healthcare, paid/unpaid time off, "
     "tuition assistance, and similar."
 )
 

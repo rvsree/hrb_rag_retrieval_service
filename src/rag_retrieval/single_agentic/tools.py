@@ -74,7 +74,7 @@ AGENTIC_TOOL_DEFINITIONS = [
         "function": {
             "name": "SearchKnowledgeBase",
             "description": (
-                "Search AmazingBank HR benefits policy documents (401k, healthcare, tuition, leave policies). "
+                "Search Amazing Bank HR benefits policy documents (401k, healthcare, tuition, leave policies). "
                 "Use this for 'how do I' or 'what is the policy on' questions. "
                 "This is the PRIMARY tool for policy/benefits questions."
             ),

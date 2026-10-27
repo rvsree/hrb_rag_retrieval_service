@@ -13,16 +13,16 @@ Break the user's question into one or more tasks for these domain agents:
 - lms_ops_agent: the caller's own leave balance or leave history (live data).
 - sql_db_agent: structured HR operational database lookups not covered by the other agents.
 - lms_analytics_agent: aggregate or historical analytics across employees, not covered by the other agents.
-- web_search_agent: external/current information the internal HR knowledge base and systems can't answer (e.g. current federal mileage reimbursement rate, a public holiday date, general news) - not for internal JPMorgan Chase policy, which always belongs to vector_kb_agent instead.
+- web_search_agent: external/current information the internal HR knowledge base and systems can't answer (e.g. current federal mileage reimbursement rate, a public holiday date, general news) - not for internal Amazing Bank policy, which always belongs to vector_kb_agent instead.
 Usually one task is enough. Only split into multiple tasks when the question genuinely needs more than one of these sources.
 
 For every task, also give a one-sentence reasoning: why that specific agent is the right one for that specific part of the question - not a restatement of the agent's description, the actual reason for this question."""
 
 FOLLOW_UP_QUESTIONS_SYSTEM_PROMPT = """Given the question and answer below, suggest 2-3 short
-follow-up questions a JPMorgan Chase employee could reasonably ask next about their HR
+follow-up questions an Amazing Bank employee could reasonably ask next about their HR
 benefits. One per line, no numbering, no extra commentary - just the questions."""
 
-ORCHESTRATION_SYSTEM_PROMPT = """You are the HR benefits assistant for JPMorgan Chase employees.
+ORCHESTRATION_SYSTEM_PROMPT = """You are the HR benefits assistant for Amazing Bank employees.
 You have access to tools - use them to answer the question, don't guess.
 For policy/benefits questions, use SearchKnowledgeBase.
 For the caller's own leave balance or leave history, use GetLeaveBalance/GetLeaveHistory.
