@@ -17,6 +17,48 @@ today - `hrb_chatbot_service`'s own retrieval code still serves that traffic
 until this repo's cutover (see Status below) is approved. You can hit this
 service's own deployed URL directly to see it work standalone.
 
+## Tech Stack
+
+```mermaid
+flowchart TD
+    HUB((hrb_rag_retrieval_service))
+    HUB --> FW[Framework]
+    HUB --> ORCH[Orchestration]
+    HUB --> RET[Retrieval]
+    HUB --> GR[Guardrails]
+    HUB --> SHARED[Shared Code]
+    HUB --> DEP[Deployment]
+
+    FW --> FW1[FastAPI]
+    FW --> FW2[Uvicorn]
+    ORCH --> O1[LangChain 0.3.x]
+    ORCH --> O2[LangGraph 0.3.x]
+    ORCH --> O3[langgraph-checkpoint-postgres]
+    RET --> R1[langchain-pinecone]
+    RET --> R2[langchain-chroma]
+    RET --> R3[Hybrid BM25 + Dense]
+    GR --> G1[Presidio]
+    GR --> G2[spaCy en_core_web_lg]
+    SHARED --> S1[hrb_common_libs v0.4.0]
+    DEP --> D1[AWS App Runner]
+    DEP --> D2[Docker 2-stage build]
+
+    classDef hub fill:#4C1D95,color:#fff,stroke:#2E1065,stroke-width:2px
+    classDef fw fill:#1D4ED8,color:#fff,stroke:#1E3A8A
+    classDef orch fill:#047857,color:#fff,stroke:#064E3B
+    classDef ret fill:#B45309,color:#fff,stroke:#78350F
+    classDef gr fill:#BE185D,color:#fff,stroke:#831843
+    classDef shared fill:#7C3AED,color:#fff,stroke:#4C1D95
+    classDef dep fill:#475569,color:#fff,stroke:#1E293B
+    class HUB hub
+    class FW,FW1,FW2 fw
+    class ORCH,O1,O2,O3 orch
+    class RET,R1,R2,R3 ret
+    class GR,G1,G2 gr
+    class SHARED,S1 shared
+    class DEP,D1,D2 dep
+```
+
 ## Quick start
 
 ```bash
