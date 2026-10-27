@@ -27,7 +27,7 @@ Tests: `pytest tests/ -v` from the repo root.
 | Orchestration | LangChain 0.3.x + LangGraph 0.3.x, with a Postgres checkpointer (`langgraph-checkpoint-postgres`) for durable agent state |
 | Retrieval | `langchain-chroma`, `langchain-pinecone` - dense + hybrid BM25, Dynamic strategy routing |
 | Guardrails | Presidio + spaCy (`en_core_web_lg`) for PII masking - ported from `hrb_chatbot_service`, same model dependency |
-| Shared code | `hrb-common-libs[observability,db,vectorstore,llm,mcp,auth,cache,web,storage,email]` - the richest dependency set of any service in this split, pinned to `v0.4.0` |
+| Shared code | `hrb_common_libs[observability,db,vectorstore,llm,mcp,auth,cache,web,storage,email]` - the richest dependency set of any service in this split, pinned to `v0.4.0` |
 | Deployment | AWS App Runner (Docker, 2-stage build), 1024 CPU / 2048 Memory - same size as `hrb_chatbot_service`'s own real LLM workload |
 
 ## Status, 2026-10-24: built, deployed, independently verified - deliberately NOT yet cut over

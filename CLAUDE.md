@@ -32,9 +32,9 @@ pytest -v
 
 ## Architecture
 
-Ports `hrb_chatbot_service`'s `ai/rag_pipeline/**` (genai-rag), `ai/agents/**` (single/multi-agentic-rag), `ai/rag_core/` (the shared guardrail/memory/logging core every strategy funnels through), and `ai/search_pre_processing/**` (10 files - guardrails_input, query_decompose, conversation_memory, cache_layer, context_assembly, context_builder, mode_router, query_normalize, search_filter, safe_terms - already well-factored, ported as-is). MCP calls (leave balance, etc.) go through the same real app-to-app OAuth2 client-credentials flow `hrb-common-libs`' `auth` extra already provides (`OAuth2ClientCredentials`) - `hrb_platform_components`' own Phase 4 already proved this exact pattern once, usable as a direct reference.
+Ports `hrb_chatbot_service`'s `ai/rag_pipeline/**` (genai-rag), `ai/agents/**` (single/multi-agentic-rag), `ai/rag_core/` (the shared guardrail/memory/logging core every strategy funnels through), and `ai/search_pre_processing/**` (10 files - guardrails_input, query_decompose, conversation_memory, cache_layer, context_assembly, context_builder, mode_router, query_normalize, search_filter, safe_terms - already well-factored, ported as-is). MCP calls (leave balance, etc.) go through the same real app-to-app OAuth2 client-credentials flow `hrb_common_libs`' `auth` extra already provides (`OAuth2ClientCredentials`) - `hrb_platform_components`' own Phase 4 already proved this exact pattern once, usable as a direct reference.
 
-Depends on `hrb-common-libs`' `db`, `vectorstore`, `llm`, `mcp`, `auth`, `cache`, and `observability` extras - all already built there, no gaps found during scoping.
+Depends on `hrb_common_libs`' `db`, `vectorstore`, `llm`, `mcp`, `auth`, `cache`, and `observability` extras - all already built there, no gaps found during scoping.
 
 ## Spec-Driven Development
 

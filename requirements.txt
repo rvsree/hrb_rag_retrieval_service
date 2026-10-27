@@ -1,7 +1,7 @@
 fastapi
 uvicorn[standard]
 pydantic
-hrb-common-libs[observability,db,vectorstore,llm,mcp,auth,cache,web,storage,email] @ git+https://github.com/rvsree/hrb-common-libs.git@v0.4.0
+hrb_common_libs[observability,db,vectorstore,llm,mcp,auth,cache,web,storage,email] @ git+https://github.com/rvsree/hrb_common_libs.git@v0.4.0
 
 # Retrieval + query decomposition - LangChain's own retrievers (matches
 # hrb_chatbot_service's own "retrieval stays raw LangChain" convention)
