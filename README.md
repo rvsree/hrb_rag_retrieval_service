@@ -1,9 +1,51 @@
-# rag_retrieval_service
+# hrb_rag_retrieval_service
 
-Retrieval half of the HRB chatbot RAG pipeline: decompose -> retrieve -> generate, across 3 answer-generation strategies (genai-rag, single-agentic-rag, multi-agentic-rag) sharing one guardrail/memory/logging core. Extracted out of `hrb_chatbot_service`'s monolith.
+Retrieval half of the HRB chatbot RAG pipeline: decompose -> retrieve -> generate, across 3 answer-generation strategies (genai-rag, single-agentic-rag, multi-agentic-rag) sharing one guardrail/memory/logging core. Extracted out of `hrb_chatbot_service`'s monolith. Real, deployed, verified - deliberately not yet in the live request path.
 
-Full design doc: `hrb_chatbot_service`'s `docs/dev-reference/service-boundary-decision.html` and `docs/dev-reference/microservices-rollout-plan.html`.
+## For reviewers / new team members (5 minutes)
 
-**Status, 2026-10-23: built, deployed, independently verified - deliberately NOT yet cut over.** Live on AWS App Runner (`https://mpm3qjkbkc.us-east-1.awsapprunner.com`), sized to match `hrb_chatbot_service`'s own instance (same agentic/LLM workload). `hrb_chatbot_service`'s own retrieval code is still what actually serves production traffic - this service runs standalone, verified independently via a real multi-turn Playwright suite driving the live UI (`hrb_chatbot_ui/e2e/golden-dataset-conversational.spec.ts`, 7/9 passing).
+1. Run it locally (below) and hit `GET /ping`.
+2. [Current state architecture](../docs/architecture/diagrams/rag-retrieval-service-current-state-architecture.drawio) - decompose/retrieve/guardrails/generate, and what it shares with `hrb_chatbot_service`.
+3. [Target state (the cutover itself)](../docs/architecture/diagrams/rag-retrieval-service-target-state-scaling-architecture.drawio) - today vs. target, side by side. This is the single biggest open architecture decision in the whole platform right now.
+4. [Deployment architecture](../docs/architecture/diagrams/rag-retrieval-service-deployment-architecture.drawio) - the real AWS resources.
 
-3 real bugs were found live during that testing and fixed, same session (see `ROADMAP.md`'s Phase 5 entry): missing `presidio`/`spacy` guardrail dependencies (every query 422'd), `vector_db`/`search_strategy`/`llm_provider` resolved via a bare Python `or` instead of real env-config resolution (silently ignored production's `pinecone` config), and an `EvalScores` schema mismatch against this repo's own no-op eval judges. 2 real findings remain, not bugs - a conversational follow-up using a pronoun ("is *that* available right away?") doesn't always retrieve the right context, since this repo's retrieval step doesn't rewrite a follow-up against conversation history before the vector search - a known RAG architecture gap, flagged for a deliberate future phase, not cutover-blocking by itself.
+## Quick start
+
+```bash
+pip install -r requirements.txt
+uvicorn rag_retrieval.main:app --host 0.0.0.0 --port 8400 --app-dir src --reload
+curl http://127.0.0.1:8400/ping
+```
+
+Tests: `pytest tests/ -v` from the repo root.
+
+## Tech stack
+
+| Layer | What's actually used |
+|---|---|
+| Framework | FastAPI + Uvicorn |
+| Orchestration | LangChain 0.3.x + LangGraph 0.3.x, with a Postgres checkpointer (`langgraph-checkpoint-postgres`) for durable agent state |
+| Retrieval | `langchain-chroma`, `langchain-pinecone` - dense + hybrid BM25, Dynamic strategy routing |
+| Guardrails | Presidio + spaCy (`en_core_web_lg`) for PII masking - ported from `hrb_chatbot_service`, same model dependency |
+| Shared code | `hrb-common-libs[observability,db,vectorstore,llm,mcp,auth,cache,web,storage,email]` - the richest dependency set of any service in this split, pinned to `v0.4.0` |
+| Deployment | AWS App Runner (Docker, 2-stage build), 1024 CPU / 2048 Memory - same size as `hrb_chatbot_service`'s own real LLM workload |
+
+## Status, 2026-10-24: built, deployed, independently verified - deliberately NOT yet cut over
+
+Live on AWS App Runner (`https://mpm3qjkbkc.us-east-1.awsapprunner.com`), sized to match `hrb_chatbot_service`'s own instance (same agentic/LLM workload, confirmed via `aws apprunner describe-service`). `hrb_chatbot_service`'s own retrieval code is still what actually serves production traffic - the Gateway's own `BACKEND_SERVICE_URL` secret still resolves there. This service runs standalone, verified independently via a real multi-turn Playwright suite driving the live UI (`hrb_chatbot_ui/e2e/golden-dataset-conversational.spec.ts`, 7/9 passing).
+
+3 real bugs were found live during that testing and fixed, same session (see `ROADMAP.md`'s Phase 5 entry): missing `presidio`/`spacy` guardrail dependencies (every query 422'd), `vector_db`/`search_strategy`/`llm_provider` resolved via a bare Python `or` instead of real env-config resolution (silently ignored production's `pinecone` config), and an `EvalScores` schema mismatch against this repo's own no-op eval judges.
+
+**2 real findings remain, not bugs:** a conversational follow-up using a pronoun ("is *that* available right away?") doesn't always retrieve the right context, since this repo's retrieval step doesn't rewrite a follow-up against conversation history before the vector search - a known RAG architecture gap, flagged for a deliberate future phase, not cutover-blocking by itself. And the cutover decision itself (flip `BACKEND_SERVICE_URL`) is still open - see the target-state diagram above for what it unlocks and what it costs `hrb_chatbot_service`.
+
+## Documentation index
+
+| Doc | What it covers |
+|---|---|
+| [Overview / Spec / Architecture / Design / Decisions / Interview FAQ](../hrb_chatbot_service/docs/dev-reference/hrb_chatbot_v3/rag-pipeline/retrieval/genai-rag-chat/) | The full HTML doc set for the genai-rag mode (also see `single-agentic-rag/`, `multi-agentic-rag/`, `retrieval-strategies/`, `search-pre-processing-layer/`, `chunking-strategy/` as siblings) |
+| [Build process](../hrb_chatbot_service/docs/dev-reference/hrb_chatbot_v3/deployment-and-ops/build-and-deploy/05a-rag-retrieval-service-build-process.html) | Docker build, step-by-step |
+| [Deployment architecture (HTML)](../hrb_chatbot_service/docs/dev-reference/hrb_chatbot_v3/deployment-and-ops/build-and-deploy/05b-rag-retrieval-service-deployment-architecture.html) | Same content as the `.drawio` above, narrative form |
+| [`service-boundary-decision.html`](../hrb_chatbot_service/docs/dev-reference/hrb_chatbot_v3/architecture/service-boundary-decision.html) | Why this service exists as its own repo |
+| [`platform-overview.html`](../hrb_chatbot_service/docs/dev-reference/hrb_chatbot_v3/architecture/platform-overview.html) | The cross-service hub - business capabilities, all 7 repos, one diagram |
+
+Older paths under `docs/dev-reference/` (no `hrb_chatbot_v3/` prefix) referenced in earlier commits are stale - that folder was reorganized 2026-10-23, and the links above reflect the real current location.
