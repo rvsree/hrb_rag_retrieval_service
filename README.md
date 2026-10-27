@@ -42,10 +42,10 @@ Live on AWS App Runner (`https://mpm3qjkbkc.us-east-1.awsapprunner.com`), sized 
 
 | Doc | What it covers |
 |---|---|
-| [Overview / Spec / Architecture / Design / Decisions / Interview FAQ](../hrb_chatbot_service/docs/dev-reference/hrb_chatbot_v3/rag-pipeline/retrieval/genai-rag-chat/) | The full HTML doc set for the genai-rag mode (also see `single-agentic-rag/`, `multi-agentic-rag/`, `retrieval-strategies/`, `search-pre-processing-layer/`, `chunking-strategy/` as siblings) |
-| [Build process](../hrb_chatbot_service/docs/dev-reference/hrb_chatbot_v3/deployment-and-ops/build-and-deploy/05a-rag-retrieval-service-build-process.html) | Docker build, step-by-step |
-| [Deployment architecture (HTML)](../hrb_chatbot_service/docs/dev-reference/hrb_chatbot_v3/deployment-and-ops/build-and-deploy/05b-rag-retrieval-service-deployment-architecture.html) | Same content as the `.drawio` above, narrative form |
-| [`service-boundary-decision.html`](../hrb_chatbot_service/docs/dev-reference/hrb_chatbot_v3/architecture/service-boundary-decision.html) | Why this service exists as its own repo |
-| [`platform-overview.html`](../hrb_chatbot_service/docs/dev-reference/hrb_chatbot_v3/architecture/platform-overview.html) | The cross-service hub - business capabilities, all 7 repos, one diagram |
+| [Overview / Spec / Architecture / Design / Decisions / Interview FAQ](../docs/rag-pipeline/retrieval/genai-rag-chat/) | The full HTML doc set for the genai-rag mode (also see `single-agentic-rag/`, `multi-agentic-rag/`, `retrieval-strategies/`, `search-pre-processing-layer/`, `chunking-strategy/` as siblings) |
+| [Build process](../docs/deployment-and-ops/build-and-deploy/05a-rag-retrieval-service-build-process.html) | Docker build, step-by-step |
+| [Deployment architecture (HTML)](../docs/deployment-and-ops/build-and-deploy/05b-rag-retrieval-service-deployment-architecture.html) | Same content as the `.drawio` above, narrative form |
+| [`service-boundary-decision.html`](../docs/architecture/service-boundary-decision.html) | Why this service exists as its own repo |
+| [`platform-overview.html`](../docs/architecture/platform-overview.html) | The cross-service hub - business capabilities, all 7 repos, one diagram |
 
 Older paths under `docs/dev-reference/` (no `hrb_chatbot_v3/` prefix) referenced in earlier commits are stale - that folder was reorganized 2026-10-23, and the links above reflect the real current location.
